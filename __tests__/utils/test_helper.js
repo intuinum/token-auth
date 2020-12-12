@@ -1,8 +1,10 @@
 const post = async (api, data, status, endpoint) => {
-    return await api
+    const { body } = await api
         .post(endpoint)
         .send(data)
         .expect(status);
+
+    return body;
 }
 
 const register = async (api, data, status) => {

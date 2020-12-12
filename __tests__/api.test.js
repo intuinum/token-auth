@@ -96,7 +96,7 @@ describe('Adding a user', () => {
             const { message } = await
                 helper.register(api, user, 400);
     
-            expect(message).toMatch('password to short');
+            expect(message).toMatch('password too short');
         });
     });
 
