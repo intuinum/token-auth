@@ -1,6 +1,14 @@
 const helper = require('./utils/test_helper');
+const mongoose = require('mongoose');
 const app = require('../src/app');
+const User = require('../src/models/User');
 const api = require('supertest')(app);
+
+jest.setTimeout(60000);
+
+beforeEach(async () => {
+    await User.deleteMany({});
+});
 
 describe('Adding a user', () => {
     describe('invalid email returns status code 400 with message', () => {
@@ -118,4 +126,8 @@ describe('Adding a user', () => {
             expect(response.token).toBeDefined();
         });
     });
+});
+
+afterAll(() => {
+    mongoose.connection.close();
 });

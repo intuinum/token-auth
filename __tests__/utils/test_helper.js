@@ -8,11 +8,11 @@ const post = async (api, data, status, endpoint) => {
 }
 
 const register = async (api, data, status) => {
-    return await post(api, data, status, '/api/user/register');
+    return await post(api, data, status, '/api/users/register');
 }
 
 const login = async (api, data, status) => {
-    return await post(api, data, status, '/api/user/login')
+    return await post(api, data, status, '/api/users/login')
 }
 
 module.exports = { register, login }
