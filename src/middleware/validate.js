@@ -1,4 +1,5 @@
 const Joi = require('@hapi/joi');
+const User = require('../models/User');
 
 const newUser = Joi.object({
     username: Joi.string().min(3).max(8).required(),
@@ -34,6 +35,20 @@ const checkError = ({ type, path }) => {
     }
 }
 
+const isUnique = async (req, res, next) => {
+    if(await User.findOne({ username: req.user.username }))
+        return res.status(400).json({
+            error: 'username already taken'
+        });
+
+    if(await User.findOne({ email: req.user.email }))
+        return res.status(400).json({
+            error: 'email already in use'
+        });
+
+    next();
+}
+
 const registration = (req, res, next) => {
     const { username, email, password } = req.body;
 
@@ -44,13 +59,19 @@ const registration = (req, res, next) => {
     if(error) {
         const { details } = error;
         return res.status(400).json({
-            message: checkError(details[0])
+            error: checkError(details[0])
         });
+    }
+
+    req.user = {
+        username: username.toLowerCase(),
+        email: email.toLowerCase(),
+        password
     }
 
     next();
 }
 
 module.exports = {
-    registration
+    isUnique, registration
 }
