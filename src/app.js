@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const cors = require('cors');
 const helemet = require('helmet');
 const userAuthRoute = require('./routes/user');
+const { authorize } = require('./middleware/token');
 
 mongoose.connect(
     DB_URI(),
@@ -24,5 +25,8 @@ app.use(helemet());
 app.use(express.json());
 
 app.use('/api/users', userAuthRoute);
+app.get('/', authorize, (req, res) => {
+    res.status(200).json({ message: 'Protected data' });
+})
 
 module.exports = app;
