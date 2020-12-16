@@ -7,6 +7,11 @@ const newUser = Joi.object({
     password: Joi.string().min(6).required()
 });
 
+const returningUser = Joi.object({
+    username: Joi.string().required(),
+    password: Joi.string().required()
+});
+
 const checkError = ({ type, path }) => {
     switch (type) {
         case 'any.required':
@@ -18,6 +23,12 @@ const checkError = ({ type, path }) => {
                 return 'you need a password'
             } 
             break;
+        case 'string.empty':
+            if(path == 'username') {
+                return 'you need a username'
+            } else if (path == 'password') {
+                return 'you need a password'
+            } 
         case 'string.email':
             return 'email invalid';
 
@@ -59,7 +70,7 @@ const registration = (req, res, next) => {
     if(error) {
         const { details } = error;
         return res.status(400).json({
-            error: checkError(details[0])
+            message: checkError(details[0])
         });
     }
 
@@ -72,6 +83,28 @@ const registration = (req, res, next) => {
     next();
 }
 
+const login = (req, res, next) => {
+    const { username, password } = req.body;
+    
+    const { error } = returningUser.validate({
+        username, password
+    });
+
+    if(error) {
+        const { details } = error;
+        return res.status(400).json({
+            message: checkError(details[0])
+        });
+    }
+
+    req.user = {
+        username: username.toLowerCase(),
+        password
+    }
+
+    next();
+}
+
 module.exports = {
-    isUnique, registration
+    isUnique, registration, login
 }
