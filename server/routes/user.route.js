@@ -2,7 +2,7 @@ const router = require('express').Router();
 const crypt = require('bcrypt');
 const validate = require('../middleware/validate');
 const { generate } = require('../middleware/token');
-const User = require('../models/User');
+const User = require('../models/user.model');
 
 router.get('/', async (req, res) => {
     try {

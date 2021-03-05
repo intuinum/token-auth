@@ -1,5 +1,5 @@
 const Joi = require('@hapi/joi');
-const User = require('../models/User');
+const User = require('../models/user.model');
 
 const newUser = Joi.object({
     username: Joi.string().min(3).max(8).required(),

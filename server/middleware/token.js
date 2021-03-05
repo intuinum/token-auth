@@ -1,4 +1,4 @@
-const { SECRET } = require('../../utils/config');
+const { SECRET } = require('../../utils/config.util');
 const jwt = require('jsonwebtoken');
 
 const generate = user => {

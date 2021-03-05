@@ -1,6 +1,8 @@
-const {PORT} = require('./utils/config');
-const server = require('http').createServer(require('./src/app'));
+require('./utils/database.util')();
+const server = require('http').createServer(require('./server'));
+const logger = require('./utils/logger.util');
+const { PORT } = require('./utils/config.util');
 
 server.listen(PORT, () => {
-    console.log(`on port ${PORT}`);
-})
+    logger.info(`running on http://localhost:${PORT}`);
+});
