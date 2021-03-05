@@ -1,0 +1,91 @@
+#app {
+    margin: 6rem 4.5rem 0 4.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    font-size: 3rem;
+    font-weight: 600;
+}
+
+.show {
+    visibility: visible;
+}
+
+.hide {
+    visibility: hidden;
+}
+
+error {
+    font-size: 18px;
+    font-size: max(18px, 1.125rem);
+    color: #E6A5A5;
+}
+
+form {
+    margin-top: 4.5625rem;
+    height: 12.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+input {
+    font-size: 24px;
+    font-size: max(24px, 1.5rem);
+    font-family: inherit;
+    border: unset;
+}
+
+input::placeholder {
+    opacity: 1;
+    color: #acacac;
+}
+
+input[type='email'], input[type='password'] {
+    width: 100%;
+    display: block;
+}
+
+input:focus {
+    outline: unset;
+}
+
+.checkbox {
+    color: #acacac;
+    font-size: 24px;
+    font-size: max(24px, 1.5rem);
+}
+
+.checkbox-label {
+    margin-left: 0.5rem;
+}
+
+button {
+    width: max-content;
+    font-size: 0.875rem;
+    color: #acacac;
+    cursor: pointer;
+    display: block;
+    border: unset;
+    background-color: unset;
+}
+
+.current-page {
+    margin-top: 16rem;
+    display: flex;
+    justify-content: center;
+    color: #acacac;
+    font-size: 18px;
+    font-size: max(18px, 1.125rem);
+}
+
+.current-page > * {
+    padding: 0 0.625rem;
+}
+
+.highlight {
+    color: #000;
+    font-weight: 600;
+}
