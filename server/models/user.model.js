@@ -1,4 +1,3 @@
-const { string } = require('@hapi/joi');
 const { Schema, model } = require('mongoose');
 
 const User = new Schema({

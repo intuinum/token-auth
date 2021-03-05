@@ -1,4 +1,4 @@
-require('./utils/database.util')();
+require('./utils/init.util')();
 const server = require('http').createServer(require('./server'));
 const logger = require('./utils/logger.util');
 const { PORT } = require('./utils/config.util');
