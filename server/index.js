@@ -11,7 +11,7 @@ app.use(cors());
 app.use(helemet());
 app.use(express.json());
 
-app.use('/api/users', userAuthRoute);
+app.use('/api/user', userAuthRoute);
 app.get('/', authorize, (req, res) => {
     res.status(200).json({ message: 'Protected data' });
 })

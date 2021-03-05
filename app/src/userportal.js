@@ -26,16 +26,14 @@ const Password = ({ password, handlePassword }) =>
         value={password} 
         onChange={handlePassword}/>
 
-const postUser = async (url, data) => {
-    const res = await axios.post(url, data);
-    return res.data;
-}
+const postUser = (url, data, fn, errFn) =>
+    axios.post(url, data).then(fn).catch(errFn);
 
-const createUser = async (data) =>
-    await postUser('http://192.168.42.10:6969/signup', data);
+const createUser = (data, fn, errFn) =>
+    postUser('http://192.168.42.10:6969/api/user/register', data, fn, errFn);
 
-const loginUser = async (data) =>
-    await postUser('http://192.168.42.10:6969/login', data);
+const loginUser = (data, fn, errFn) =>
+    postUser('http://192.168.42.10:6969/api/user/login', data, fn, errFn);
 
 const UserPortal = () => {
     const [tab, setTab] = useState('signup');
@@ -67,24 +65,18 @@ const UserPortal = () => {
             email, password
         }
 
-        try {
-            if(tab === 'signup') {
-                try {
-                    const response = await createUser(data);   
-                } catch (error) {
-                    throw `Network error: couldn't signup`
-                }
-            } else {
-                try {
-                    const response = await loginUser(data); 
-                } catch (error) {
-                    throw `Network error: couldn't login.`
-                }
-            }
-        } catch (err) {
-            setError(err);
-            setEmail('');
-            setPassword('');
+        if(tab === 'signup') {
+            createUser(data, 
+                (response) => {
+                    console.log(response);
+                },
+                ({response}) => {
+                    setError(response.data.message);
+                    setPassword('');
+                    setEmail('');
+                });
+        } else {
+            loginUser(data);
         }
     }
 
@@ -95,7 +87,7 @@ const UserPortal = () => {
         <header>
             Wadup
         </header>
-        <error className={error.length >= 1 ? 'show' : 'hide'}>{`${error}`}</error>
+        <div className={`error ${error.length >= 1 ? 'show' : 'hide'}`}>{`${error}`}</div>
         <form onSubmit={handleSubmit}>
             <Email email={email} handleEmail={handleEmail}/>
             <Password password={password} handlePassword={handlePassword}/>

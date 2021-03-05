@@ -2,13 +2,12 @@ const Joi = require('@hapi/joi');
 const User = require('../models/user.model');
 
 const newUser = Joi.object({
-    username: Joi.string().min(3).max(8).required(),
     email: Joi.string().min(3).required().email(),
     password: Joi.string().min(6).required()
 });
 
 const returningUser = Joi.object({
-    username: Joi.string().required(),
+    email: Joi.string().required().email(),
     password: Joi.string().required()
 });
 
@@ -61,10 +60,10 @@ const isUnique = async (req, res, next) => {
 }
 
 const registration = (req, res, next) => {
-    const { username, email, password } = req.body;
+    const { email, password } = req.body;
 
     const { error } = newUser.validate({
-        username, email, password 
+        email, password 
     });
 
     if(error) {
@@ -75,7 +74,6 @@ const registration = (req, res, next) => {
     }
 
     req.user = {
-        username: username.toLowerCase(),
         email: email.toLowerCase(),
         password
     }
@@ -84,10 +82,10 @@ const registration = (req, res, next) => {
 }
 
 const login = (req, res, next) => {
-    const { username, password } = req.body;
+    const { email, password } = req.body;
     
     const { error } = returningUser.validate({
-        username, password
+        email, password
     });
 
     if(error) {
@@ -98,7 +96,7 @@ const login = (req, res, next) => {
     }
 
     req.user = {
-        username: username.toLowerCase(),
+        email: email.toLowerCase(),
         password
     }
 

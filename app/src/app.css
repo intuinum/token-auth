@@ -17,7 +17,7 @@ header {
     visibility: hidden;
 }
 
-error {
+.error {
     font-size: 18px;
     font-size: max(18px, 1.125rem);
     color: #E6A5A5;
