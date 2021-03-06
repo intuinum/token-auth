@@ -82,6 +82,7 @@ button {
 }
 
 .current-page > * {
+    cursor: pointer;
     padding: 0 0.625rem;
 }
 

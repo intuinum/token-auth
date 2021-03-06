@@ -1,11 +1,12 @@
 import { Route, Redirect } from 'react-router-dom';
+import { withToken } from './tokenContext';
 
-const PrivateRoute = ({ children, ...rest }) => {
+const PrivateRoute = ({ children, token, ...rest }) => {
 	return (
 		<Route {...rest}>
-			{false ? children : <Redirect to='/portal'/>}
+			{token ? children : <Redirect to='/portal'/>}
 		</Route>
 	);
 }
 
-export default PrivateRoute;
+export default withToken(PrivateRoute);
