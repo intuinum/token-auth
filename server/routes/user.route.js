@@ -34,11 +34,11 @@ router.post('/register', validate.registration, validate.isUnique,
 router.post('/login', validate.login, 
     async (req, res) => {
         const user = await User.findOne({
-            username: req.user.username  
+            email: req.user.email  
         });
 
         if(!user) return res.status(400).json({
-            message: 'Incorrect login (username)'
+            message: 'Incorrect login (email)'
         });
 
         const passwordValid = await crypt.compare(req.user.password, user.hash)

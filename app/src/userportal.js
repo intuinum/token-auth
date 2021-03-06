@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Redirect } from 'react-router-dom';
+import { withToken } from './tokenContext';
 import axios from 'axios';
 
 const Tab = ({ style, text, changeTab }) => {
@@ -10,16 +11,18 @@ const Tab = ({ style, text, changeTab }) => {
     );
 }
 
-const Email = ({ email, handleEmail }) => 
-    <input 
+const Email = ({ email, handleEmail, disable }) => 
+    <input
+        disabled={disable}
         required 
         type='email' 
         placeholder='Email' 
-        value={email} 
+        value={email}
         onChange={handleEmail}/>
 
-const Password = ({ password, handlePassword }) =>
-    <input 
+const Password = ({ password, handlePassword, disable }) =>
+    <input
+        disabled={disable}
         required 
         type='password' 
         placeholder='password' 
@@ -35,12 +38,33 @@ const createUser = (data, fn, errFn) =>
 const loginUser = (data, fn, errFn) =>
     postUser('http://192.168.42.10:6969/api/user/login', data, fn, errFn);
 
-const UserPortal = () => {
+const UserPortal = ({ token, setToken }) => {
     const [tab, setTab] = useState('signup');
     const [redirect, setRedirect] = useState(false);
+    const [disable, setDisable] = useState(false);
     const [error, setError] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [save, setSave] = useState(false);
+
+    const saving = (token) => {
+        if(save)
+            window.localStorage.setItem('user-token', token);
+    }
+
+    const onSubmitSuccess = (response) => {
+        setDisable(true);
+        if(error.length >= 1) setError('');
+        setToken(response.data.token);
+        saving(response.data.token)
+        setRedirect(true);
+    }
+
+    const onSubmitError = ({ response }) => {
+        setError(response.data.message);
+        setPassword('');
+        setEmail('');
+    }
 
     const changeTab = (e) => {
         e.preventDefault();
@@ -57,6 +81,9 @@ const UserPortal = () => {
 
     const handlePassword = (e) => 
         setPassword(e.target.value);
+    
+    const handleSave = (e) =>
+        setSave(e.target.checked);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -66,36 +93,32 @@ const UserPortal = () => {
         }
 
         if(tab === 'signup') {
-            createUser(data, 
-                (response) => {
-                    console.log(response);
-                },
-                ({response}) => {
-                    setError(response.data.message);
-                    setPassword('');
-                    setEmail('');
-                });
+            createUser(data,
+                onSubmitSuccess,
+                onSubmitError);
         } else {
-            loginUser(data);
+            loginUser(data,
+                onSubmitSuccess,
+                onSubmitError);
         }
     }
 
-    if(redirect) return <Redirect to='/'/>
-
-    return (
+    if(redirect || token)
+        return <Redirect to='/'/>;
+    else return (
         <section id='app'>
         <header>
             Wadup
         </header>
         <div className={`error ${error.length >= 1 ? 'show' : 'hide'}`}>{`${error}`}</div>
         <form onSubmit={handleSubmit}>
-            <Email email={email} handleEmail={handleEmail}/>
-            <Password password={password} handlePassword={handlePassword}/>
+            <Email disable={disable} email={email} handleEmail={handleEmail}/>
+            <Password disable={disable} password={password} handlePassword={handlePassword}/>
             <label className='checkbox'>
-                <input id='checkbox' type='checkbox'/>
+                <input disabled={disable} id='checkbox' type='checkbox' checked={save} onChange={handleSave}/>
                 <span className='checkbox-label'>Stay signed in?</span>
             </label>
-            <button type='submit'>Done</button>
+            <button disabled={disable} type='submit'>Done</button>
         </form>
         <div className='current-page'>
             <Tab
@@ -112,4 +135,4 @@ const UserPortal = () => {
     );
 }
 
-export default UserPortal;
+export default withToken(UserPortal);
