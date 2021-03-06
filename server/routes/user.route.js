@@ -1,17 +1,8 @@
 const router = require('express').Router();
 const crypt = require('bcrypt');
 const validate = require('../middleware/validate');
-const { generate } = require('../middleware/token');
+const { generate, authorize } = require('../middleware/token');
 const User = require('../models/user.model');
-
-router.get('/', async (req, res) => {
-    try {
-        const users = await User.find({});
-        res.status(200).json({ users });   
-    } catch (error) {
-        res.status(500).json({ error });
-    }
-});
 
 router.post('/register', validate.registration, validate.isUnique,
     async (req, res) => {
@@ -52,5 +43,27 @@ router.post('/login', validate.login,
         });
     }
 );
+
+router.get('/', authorize, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if(!user) throw `couldn't find user`;
+        res.status(200).json({ user });
+    } catch (error) {
+        res.status(404).json({ message: error });
+    }
+});
+
+router.delete('/', authorize, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id);
+        if(!user) throw `couldn't find user`;
+
+        await User.findByIdAndDelete(req.user.id)
+        res.status(204).end();
+    } catch (error) {
+        res.status(404).json({ message: error });
+    }
+});
 
 module.exports = router;

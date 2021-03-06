@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Switch, Route } from 'react-router-dom';
 import UserPortal from './userportal';
+import UserDashboard from './userdashboard';
 import PrivateRoute from './privateroute';
 import { TokenProvider } from './tokenContext';
 import './app.css';
 
 function App() {
 	const [token, setToken] = useState();
+	const [user, setUser] = useState();
 
 	useEffect(() => {
 		const savedToken = window.localStorage.getItem('user-token');
@@ -17,10 +19,10 @@ function App() {
 		<TokenProvider value={{ token, setToken }}>
 		<Switch>
 			<PrivateRoute exact path='/'>
-				<h1>Hidden information</h1>
+				<UserDashboard setUser={setUser} user={user}/>
 			</PrivateRoute>
 			<Route path='/portal'>
-				<UserPortal/>
+				<UserPortal setUser={setUser}/>
 			</Route>
 		</Switch>
 		</TokenProvider>

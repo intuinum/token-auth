@@ -38,7 +38,7 @@ const createUser = (data, fn, errFn) =>
 const loginUser = (data, fn, errFn) =>
     postUser('http://192.168.42.10:6969/api/user/login', data, fn, errFn);
 
-const UserPortal = ({ token, setToken }) => {
+const UserPortal = ({ token, setToken, setUser }) => {
     const [tab, setTab] = useState('signup');
     const [redirect, setRedirect] = useState(false);
     const [disable, setDisable] = useState(false);
@@ -56,14 +56,18 @@ const UserPortal = ({ token, setToken }) => {
         setDisable(true);
         if(error.length >= 1) setError('');
         setToken(response.data.token);
+        setUser(response.data.user.email);
         saving(response.data.token)
         setRedirect(true);
     }
 
-    const onSubmitError = ({ response }) => {
-        setError(response.data.message);
-        setPassword('');
-        setEmail('');
+    const onSubmitError = (error) => {
+        if(error.response) {
+            const { response } = error;
+            setError(response.data.message);
+            setPassword('');
+            setEmail('');
+        }
     }
 
     const changeTab = (e) => {
@@ -106,9 +110,10 @@ const UserPortal = ({ token, setToken }) => {
     if(redirect || token)
         return <Redirect to='/'/>;
     else return (
-        <section id='app'>
+        <section id='app' className='portal'>
         <header>
             Wadup
+            <span className='tab'>({tab})</span>
         </header>
         <div className={`error ${error.length >= 1 ? 'show' : 'hide'}`}>{`${error}`}</div>
         <form onSubmit={handleSubmit}>

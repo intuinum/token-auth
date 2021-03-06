@@ -1,12 +1,43 @@
 #app {
-    margin: 6rem 4.5rem 0 4.5rem;
+    margin: 0 4.5rem;
     display: flex;
     flex-direction: column;
 }
 
 header {
+    margin-top: 9.3rem;
     font-size: 3rem;
     font-weight: 600;
+}
+
+header .tab {
+    font-size: 1rem;
+    color: #acacac;
+}
+
+.dashboard header {
+    margin-top: 2.25rem;
+}
+
+.logout {
+    margin-top: 6rem;
+    align-self: flex-end;
+}
+
+.dashboard form {
+    margin-top: 5.8125rem;
+}
+
+.delete {
+    margin-top: 15rem;
+    width: 100%;
+}
+
+.delete button {
+    margin: auto;
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: #E6A5A5;
 }
 
 .show {
@@ -21,6 +52,16 @@ header {
     font-size: 18px;
     font-size: max(18px, 1.125rem);
     color: #E6A5A5;
+}
+
+.dashboard p {
+    font-size: 1.5rem;
+}
+
+.dashboard .email {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #acacac;
 }
 
 form {
@@ -73,7 +114,7 @@ button {
 }
 
 .current-page {
-    margin-top: 16rem;
+    margin-top: 15rem;
     display: flex;
     justify-content: center;
     color: #acacac;
