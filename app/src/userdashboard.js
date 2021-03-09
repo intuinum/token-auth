@@ -5,8 +5,10 @@ import { withToken } from './tokenContext';
 
 const UserDashboard = ({ token, setToken, user, setUser }) => {
 	const [redirect, setRedirect] = useState(false);
-	const [oldPassword, setOld] = useState();
-	const [newPassword, setNew] = useState();
+	const [error, setError] = useState('');
+	const [success, setSuccess] = useState('');
+	const [oldPassword, setOld] = useState('');
+	const [newPassword, setNew] = useState('');
 
 	useEffect(() => {
 		if(!token) setRedirect(true);
@@ -17,7 +19,14 @@ const UserDashboard = ({ token, setToken, user, setUser }) => {
 			.then(({ data }) => {
 				setUser(data.user.email);
 			})
-			.catch((err) => { console.log(err); });
+			.catch((error) => {
+				if(error.response) {
+					const { response } = error;
+					setError(response.data.message);
+					setToken(undefined);
+					setRedirect(true);
+				}
+			});
 
 	}, [token]);
 
@@ -35,6 +44,31 @@ const UserDashboard = ({ token, setToken, user, setUser }) => {
 
     const changePassword = (e) => {
         e.preventDefault();
+		setSuccess('');
+
+		const update = {
+			current: oldPassword,
+			updated: newPassword
+		}
+
+		axios
+		.put(
+			'http://192.168.42.10:6969/api/user/password',
+			{ update }, 
+			{ headers: {'authorization': `bearer ${token}`} })
+		.then((res) => {
+			if(error.length >= 1) setError('');
+			setSuccess('Password change, successful!');
+			setOld('');
+			setNew('');
+		})
+		.catch((error) => {
+			if(error.response) {
+				setError('');
+				const { response } = error;
+				setError(response.data.message);
+			}
+		});
 	}
 
 	const deleteAccount = (e) => {
@@ -57,10 +91,12 @@ const UserDashboard = ({ token, setToken, user, setUser }) => {
 		<button className='logout' onClick={handleLogout}>logout</button>
 		<header>Dashboard</header>
 		<p className='email'>{user}</p>
+		<div className={`error ${error.length >= 1 ? 'show' : 'hide'}`}>{`${error}`}</div>
+		<div className={`success ${success.length >=1 ? 'show': 'hide'}`}>{`${success}`}</div>
 		<form onSubmit={changePassword}>
 			<p>Update Password</p>
-			<input placeholder='Old' type='password' value={oldPassword} onChange={handleOld}/>
-			<input placeholder='New' type='password' value={newPassword} onChange={handleNew}/>
+			<input required placeholder='Old' type='password' value={oldPassword} onChange={handleOld}/>
+			<input required placeholder='New' type='password' value={newPassword} onChange={handleNew}/>
 			<button type='submit'>Done</button>
 		</form>
         <div className='delete'>

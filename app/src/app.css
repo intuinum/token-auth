@@ -48,11 +48,14 @@ header .tab {
     visibility: hidden;
 }
 
-.error {
+.error, .success {
     font-size: 18px;
     font-size: max(18px, 1.125rem);
-    color: #E6A5A5;
 }
+
+.error { color: #E6A5A5; }
+
+.success { color: #A5E5A5 }
 
 .dashboard p {
     font-size: 1.5rem;

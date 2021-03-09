@@ -54,6 +54,32 @@ router.get('/', authorize, async (req, res) => {
     }
 });
 
+router.put('/password', authorize, async (req, res) => {
+    console.log(req.body);
+
+    try {
+        if(!req.body.update) throw 'need password';
+        const { current, updated } = req.body.update;
+
+        const user = await User.findById(req.user.id);
+
+        const validPassword = await crypt.compare(current, user.hash)
+        if(!validPassword) throw 'Incorrect password'
+
+        const updatedPassword = await crypt.compare(updated, user.hash);
+        if(updatedPassword) throw 'New password cant be same as old';
+
+        const salt = await crypt.genSalt(10);
+        user.hash = await
+            crypt.hash(updated, salt);
+        user.save();
+
+        res.status(200).json({ message: user });
+    } catch (error) {
+        res.status(400).json({ message: error });
+    }
+});
+
 router.delete('/', authorize, async (req, res) => {
     try {
         const user = await User.findById(req.user.id);
